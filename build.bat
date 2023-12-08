@@ -4,25 +4,29 @@ set MAINFAILENAME=pixelgreat-gui
 set ENVNAME=%MAINFAILENAME%
 
 set ORIGDIR=%CD%
+set SOURCEDIR=%ORIGDIR%\src
 set DISTDIR=%ORIGDIR%\dist
 set BUILDDIR=%ORIGDIR%\build
 
-set PY=%ORIGDIR%\%MAINFAILENAME%.py
+set PY=%SOURCEDIR%\%MAINFAILENAME%.py
 set SPEC=%ORIGDIR%\%MAINFAILENAME%.spec
 set EXE=%DISTDIR%\%MAINFAILENAME%.exe
 
+set VERSION_YAML=%SOURCEDIR%\version.yml
 set VERSION_INFO=%ORIGDIR%\file_version_info.txt
+
+set ICON_ICO=%SOURCEDIR%\icon.ico
 
 
 echo Building portable EXE...
-call conda run -n %ENVNAME% create-version-file version.yml --outfile %VERSION_INFO%
+call conda run -n %ENVNAME% create-version-file %VERSION_YAML% --outfile %VERSION_INFO%
 if errorlevel 1 goto ERROR
 call conda run -n %ENVNAME% pyinstaller ^
     --clean ^
     --noconfirm ^
-	--add-data icon.png;. ^
+	--add-data %SOURCEDIR%\*;. ^
     --onefile ^
-    --icon=icon.ico ^
+    --icon=%ICON_ICO% ^
     --version-file=%VERSION_INFO% ^
     "%PY%"
 if errorlevel 1 goto ERROR
