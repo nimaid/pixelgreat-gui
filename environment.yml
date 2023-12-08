@@ -8,5 +8,5 @@ dependencies:
     - pyinstaller
     - pyinstaller-versionfile
     - Pillow
-    - pixelgreat >=1.3
+    - pixelgreat
     - PyQt5
