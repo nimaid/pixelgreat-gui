@@ -1,6 +1,6 @@
 [project]
-name = "pixelgrea_gui"
-version = "0.1.0"
+name = "pixelgreat_gui"
+version = "1.0.0"
 description = "A highly realistic RGB pixel filter (GUI Application)"
 license= {file = "LICENSE"}
 authors = [

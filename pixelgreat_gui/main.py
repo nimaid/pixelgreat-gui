@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import sys
 from PyQt5.QtWidgets import QApplication
 
@@ -19,10 +17,8 @@ class MainWindow:
         self.app.exec()
 
 
-def main():
-    main_window = MainWindow(sys.argv)
+def run(args=None):
+    if args is None:
+        args = sys.argv
+    main_window = MainWindow(args)
     main_window.run()
-
-
-if __name__ == "__main__":
-    main()

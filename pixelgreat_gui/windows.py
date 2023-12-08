@@ -18,7 +18,7 @@ from PyQt5.QtGui import (
     QPainter
 )
 
-from . import constants
+from . import constants, widgets
 
 
 # ---- MAIN WINDOW ----

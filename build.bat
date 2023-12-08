@@ -2,15 +2,17 @@
 
 set MAINFAILENAME=pixelgreat-gui
 set ENVNAME=%MAINFAILENAME%
+set MODULENAME=pixelgreat_gui
 
 set ORIGDIR=%CD%
-set SOURCEDIR=%ORIGDIR%\pixelgreat_gui
+set SOURCEDIR=%ORIGDIR%\%MODULENAME%
 set DISTDIR=%ORIGDIR%\dist
 set BUILDDIR=%ORIGDIR%\build
 
-set PY=%SOURCEDIR%\%MAINFAILENAME%.py
+set PY=%ORIGDIR%\%MAINFAILENAME%.py
 set SPEC=%ORIGDIR%\%MAINFAILENAME%.spec
 set EXE=%DISTDIR%\%MAINFAILENAME%.exe
+set TARGETEXE=%ORIGDIR%\%MAINFAILENAME%.exe
 
 set VERSION_YAML=%SOURCEDIR%\version.yml
 set VERSION_INFO=%ORIGDIR%\file_version_info.txt
@@ -20,13 +22,18 @@ set ICON_ICO=%RESOURCEDIR%\icon.ico
 
 
 echo Building portable EXE...
+del /f /s /q "%TARGETEXE%" 1>nul 2>&1
 call conda run -n %ENVNAME% create-version-file %VERSION_YAML% --outfile %VERSION_INFO%
 if errorlevel 1 goto ERROR
 call conda run -n %ENVNAME% pyinstaller ^
     --clean ^
     --noconfirm ^
     --noconsole ^
-	--add-data %SOURCEDIR%\*;. ^
+	--add-data %SOURCEDIR%\*.py;.\%MODULENAME% ^
+	--add-data %SOURCEDIR%\version.yml;.\%MODULENAME% ^
+	--add-data %SOURCEDIR%\constants\*.py;.\%MODULENAME%\constants ^
+	--add-data %SOURCEDIR%\helpers\*.py;.\%MODULENAME%\helpers ^
+	--add-data %SOURCEDIR%\resources\*;.\%MODULENAME%\resources ^
     --onefile ^
     --icon=%ICON_ICO% ^
     --version-file=%VERSION_INFO% ^
@@ -34,7 +41,7 @@ call conda run -n %ENVNAME% pyinstaller ^
 if errorlevel 1 goto ERROR
 
 echo Cleaning up before making release...
-move "%EXE%" "%ORIGDIR%"
+move "%EXE%" "%TARGETEXE%"
 del /f /s /q "%DISTDIR%" 1>nul 2>&1
 rmdir /s /q "%DISTDIR%" 1>nul 2>&1
 del /f /s /q "%BUILDDIR%" 1>nul 2>&1
