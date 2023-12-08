@@ -25,4 +25,4 @@ Issues = "https://github.com/nimaid/pixelgreat-gui/issues"
 
 
 [project.scripts]
-pixelgreat-gui = "pixelgreat_gui:main"
+pixelgreat-gui = "pixelgreat_gui:run"
