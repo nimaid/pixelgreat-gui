@@ -39,8 +39,8 @@ DEFAULTS = {
         "CRT_TV": 1,
         "CRT_MONITOR": 0.5
     },
-    "bloom_strength": 1.0,#
-    "grid_strength": 1.0,#
-    "pixelate": True,#
-    "output_scale": 1.0#
+    "bloom_strength": 1.0,
+    "grid_strength": 1.0,
+    "pixelate": True,
+    "output_scale": 1.0
 }

@@ -40,13 +40,13 @@ class MyQMainWindow(QMainWindow):
         self.padding_px = 10
         self.filename = None
         self.source = None
+        self.filter = None
 
         # Make main settings object
         self.settings = settings.PixelgreatSettings()
 
         # Set main window size restrictions
         self.setMinimumSize(300, 300)
-        self.resize(800, 600)
 
         # Setup main viewer
         self.viewer = widgets.PhotoViewer(self, background=QColor(constants.COLORS["viewer"]))
@@ -159,48 +159,86 @@ class MyQMainWindow(QMainWindow):
         self.scanline_strength_entry.setSuffix("%")
         self.scanline_strength_entry.setValue(self.settings.get_setting("scanline_strength") * 100)
         self.scanline_strength_entry.valueChanged.connect(self.scanline_strength_entry_changed)
+        #   Bloom Strength
+        self.bloom_strength_entry = QDoubleSpinBox()
+        self.bloom_strength_entry.setMinimum(0.0)
+        self.bloom_strength_entry.setMaximum(100.0)
+        self.bloom_strength_entry.setSingleStep(1.0)
+        self.bloom_strength_entry.setSuffix("%")
+        self.bloom_strength_entry.setValue(self.settings.get_setting("bloom_strength") * 100)
+        self.bloom_strength_entry.valueChanged.connect(self.bloom_strength_entry_changed)
+        #   Grid Strength
+        self.grid_strength_entry = QDoubleSpinBox()
+        self.grid_strength_entry.setMinimum(0.0)
+        self.grid_strength_entry.setMaximum(100.0)
+        self.grid_strength_entry.setSingleStep(1.0)
+        self.grid_strength_entry.setSuffix("%")
+        self.grid_strength_entry.setValue(self.settings.get_setting("grid_strength") * 100)
+        self.grid_strength_entry.valueChanged.connect(self.grid_strength_entry_changed)
+        #   Output Scale
+        self.output_scale_entry = QDoubleSpinBox()
+        self.output_scale_entry.setMinimum(0.1)
+        self.output_scale_entry.setMaximum(9999)
+        self.output_scale_entry.setSingleStep(1.0)
+        self.output_scale_entry.setSuffix("%")
+        self.output_scale_entry.setValue(self.settings.get_setting("output_scale") * 100)
+        self.output_scale_entry.valueChanged.connect(self.output_scale_entry_changed)
+        #   Pixelate
+        self.pixelate_entry = QCheckBox()
+        self.pixelate_entry.setChecked(self.settings.get_setting("pixelate"))
+        self.pixelate_entry.stateChanged.connect(self.pixelate_entry_changed)
+        #   Apply Button
+        
 
         # Declare settings area
         self.settings_area = QGridLayout()
-        self.settings_area.setContentsMargins(0, 0, 0, self.padding_px)
+        self.settings_area.setContentsMargins(self.padding_px, 0, self.padding_px, self.padding_px)
         self.settings_area.setSpacing(self.padding_px)
 
         # Populate settings area
         self.entries_array = [
-            [  # Column 0-1
-                [QLabel("Screen Type:"), self.screen_type_entry],
-                [QLabel("Blur:"), self.blur_entry],
-                [QLabel("Bloom Size:"), self.bloom_size_entry],
-                [QLabel("Pixel Rounding:"), self.rounding_entry],
-                [QLabel("Scanline Strength:"), self.scanline_strength_entry],
-            ],
-            [  # Column 2-3
-                [QLabel("Washout:"), self.washout_entry],
-                [QLabel("Grid Direction:"), self.direction_entry],
+            [
+                [QLabel("Brighten Source:"), self.brighten_entry],
+                [QLabel("Washout Source:"), self.washout_entry],
+                [QLabel("Blur Source:"), self.blur_entry],
+                [QLabel("Pixelate Source:"), self.pixelate_entry],
                 [QLabel("Pixel Aspect:"), self.pixel_aspect_entry],
-                [QLabel("Scanline Spacing:"), self.scanline_spacing_entry],
             ],
-            [  # Column 4-5
-                [QLabel("Pixel Padding:"), self.pixel_padding_entry],
-                [QLabel("Brighten:"), self.brighten_entry],
+            [
+                [QLabel("RGB Filter Type:"), self.screen_type_entry],
+                [QLabel("RGB Filter Strength:"), self.grid_strength_entry],
+                [QLabel("RGB Filter Direction:"), self.direction_entry],
+                [QLabel("RGB Pixel Padding:"), self.pixel_padding_entry],
+                [QLabel("RGB Pixel Rounding:"), self.rounding_entry],
+            ],
+            [
+                [QLabel("Scanline Strength:"), self.scanline_strength_entry],
+                [QLabel("Scanline Spacing:"), self.scanline_spacing_entry],
                 [QLabel("Scanline Size:"), self.scanline_size_entry],
                 [QLabel("Scanline Blur:"), self.scanline_blur_entry],
+            ],
+            [
+                [QLabel("Bloom Strength:"), self.bloom_strength_entry],
+                [QLabel("Bloom Size:"), self.bloom_size_entry],
+                None,
+                [QLabel("Output Scale:"), self.output_scale_entry],
             ],
         ]
         for column, column_group in enumerate(self.entries_array):
             for row, row_group in enumerate(column_group):
-                self.settings_area.addWidget(
-                    row_group[0],
-                    row,
-                    column * 2,
-                    alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight
-                )
-                self.settings_area.addWidget(
-                    row_group[1],
-                    row,
-                    (column * 2) + 1,
-                    alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft
-                )
+                if row_group is not None:
+                    self.settings_area.addWidget(
+                        row_group[0],
+                        row,
+                        column * 2,
+                        alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight
+                    )
+                    self.settings_area.addWidget(
+                        row_group[1],
+                        row,
+                        (column * 2) + 1,
+                        alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft
+                    )
 
         # Start the settings area disabled
         self.set_settings_entries_enabled(False)
@@ -242,6 +280,15 @@ class MyQMainWindow(QMainWindow):
         self.help_menu_about.triggered.connect(self.about_clicked)
         self.help_menu.addAction(self.help_menu_about)
 
+        # Finally, set the window size based on it's sizeHint after 10 millis
+        QTimer.singleShot(10, self.set_window_size)
+
+    def set_window_size(self):
+        size_hint = self.sizeHint()
+        new_size = QSize(size_hint.width(), size_hint.height() * 2)
+        self.setMinimumSize(new_size)
+        self.resize(new_size)
+
     def set_viewer_image(self, image=None):
         if image is not None:
             self.viewer.set_photo(helpers.image_to_pixmap(image))
@@ -273,6 +320,10 @@ class MyQMainWindow(QMainWindow):
             self.scanline_size_entry,
             self.scanline_blur_entry,
             self.scanline_strength_entry,
+            self.bloom_strength_entry,
+            self.grid_strength_entry,
+            self.output_scale_entry,
+            self.pixelate_entry,
         ]:
             element.setEnabled(enabled)
 
@@ -297,6 +348,10 @@ class MyQMainWindow(QMainWindow):
             [self.scanline_size_entry, "scanline_size"],
             [self.scanline_blur_entry, "scanline_blur"],
             [self.scanline_strength_entry, "scanline_strength"],
+            [self.bloom_strength_entry, "bloom_strength"],
+            [self.grid_strength_entry, "grid_strength"],
+            [self.output_scale_entry, "output_scale"],
+            [self.pixelate_entry, "pixelate"],
         ]:
             element.setValue(self.settings.get_setting(name) * 100)
 
@@ -349,6 +404,21 @@ class MyQMainWindow(QMainWindow):
     def scanline_strength_entry_changed(self, value):
         self.settings.set_setting("scanline_strength", value / 100)
 
+    def bloom_strength_entry_changed(self, value):
+        self.settings.set_setting("bloom_strength", value / 100)
+
+    def grid_strength_entry_changed(self, value):
+        self.settings.set_setting("grid_strength", value / 100)
+
+    def output_scale_entry_changed(self, value):
+        self.settings.set_setting("output_scale_entry", value / 100)
+
+    def pixelate_entry_changed(self, value):
+        if value == 0:
+            self.settings.set_setting("pixelate", False)
+        else:
+            self.settings.set_setting("pixelate", True)
+
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(
             self,
@@ -370,6 +440,8 @@ class MyQMainWindow(QMainWindow):
 
     def resizeEvent(self, event):
         self.viewer.update_view()
+        #print(self.frameSize())
+        #print(self.sizeHint())
 
 
 # ---- POPUP WINDOWS ----
