@@ -5,10 +5,10 @@ from PyQt5.QtWidgets import (
     QMainWindow, QWidget,
     QGridLayout, QHBoxLayout,
     QLabel, QPushButton,
-    QFileDialog, QAction,
+    QFileDialog, QAction, QSizePolicy,
     QDialog, QDialogButtonBox, QComboBox, QLineEdit, QCheckBox,
     QSpinBox, QDoubleSpinBox,
-    QMessageBox,
+    QMessageBox, QTextEdit,
     QAbstractButton,
     QSlider,
     QStyle,
@@ -35,13 +35,16 @@ class MyQMainWindow(QMainWindow):
         self.setWindowTitle(f"{constants.TITLE}")
         self.setWindowIcon(QIcon(constants.ICON_PATHS["program"]))
 
+        # Set window size
+        self.setMinimumSize(300, 300)
+
         # Declare elements
         self.padding_px = 10
 
         # Setup main viewer
         self.viewer = widgets.PhotoViewer(self)
-        self.viewer.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.viewer.setFixedSize(QSize(400, 400))
+        self.viewer.setRenderHints(QPainter.Antialiasing)
+        self.viewer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Declare main layout
         self.main_layout = QGridLayout()
@@ -49,7 +52,7 @@ class MyQMainWindow(QMainWindow):
         self.main_layout.setSpacing(self.padding_px)
 
         # Populate main layout
-        self.main_layout.addWidget(self.viewer, 0, 0, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.main_layout.addWidget(self.viewer, 0, 0)
 
         # Set main layout as the central widget
         self.main_widget = QWidget()
@@ -115,6 +118,7 @@ class MyQMainWindow(QMainWindow):
         popup = About(parent=self)
 
         result = popup.exec()
+
 
 # ---- POPUP WINDOWS ----
 
