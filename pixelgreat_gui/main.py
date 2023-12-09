@@ -16,12 +16,8 @@ class MainWindow:
         self.app = QApplication(qt_args)
         self.window = windows.MyQMainWindow()
 
-        # Declare variables
-        self.padding_px = 10
-
         # Setup colors
         self.app.setStyle("fusion")
-
         self.palette = QPalette()
         self.palette.setColor(QPalette.Window, QColor(constants.COLORS["background"]))
         self.palette.setColor(QPalette.WindowText, Qt.white)

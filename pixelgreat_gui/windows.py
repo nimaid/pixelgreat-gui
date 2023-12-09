@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt, QUrl, QTimer, QSize
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget,
-    QGridLayout, QHBoxLayout,
+    QGridLayout, QHBoxLayout, QVBoxLayout,
     QLabel, QPushButton,
     QFileDialog, QAction, QSizePolicy,
     QDialog, QDialogButtonBox, QComboBox, QLineEdit, QCheckBox,
@@ -40,19 +40,33 @@ class MyQMainWindow(QMainWindow):
 
         # Set main window size restrictions
         self.setMinimumSize(300, 300)
+        self.resize(800, 600)
 
         # Setup main viewer
-        self.viewer = widgets.PhotoViewer(self, background=QColor(constants.COLORS["background"]))
+        self.viewer = widgets.PhotoViewer(self, background=QColor(constants.COLORS["viewer"]))
         self.viewer.setRenderHints(QPainter.Antialiasing)
         self.viewer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
+        # Declare settings elements
+        self.test_label = QLabel("Test!")
+        self.test_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Declare settings area
+        self.settings_area = QHBoxLayout()
+        self.settings_area.setContentsMargins(0, 0, 0, self.padding_px)
+        self.settings_area.setSpacing(self.padding_px)
+
+        # Populate settings area
+        self.settings_area.addWidget(self.test_label)
+
         # Declare main layout
-        self.main_layout = QGridLayout()
+        self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(self.padding_px)
 
         # Populate main layout
-        self.main_layout.addWidget(self.viewer, 0, 0)
+        self.main_layout.addWidget(self.viewer)
+        self.main_layout.addLayout(self.settings_area)
 
         # Set main layout as the central widget
         self.main_widget = QWidget()
