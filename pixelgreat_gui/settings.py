@@ -20,7 +20,8 @@ class PixelgreatSettings:
                 screen_type_settings[setting_name] = constants.DEFAULTS[setting_name][screen_type]
 
             for setting_name in ["brighten", "bloom_size", "pixel_aspect", "scanline_spacing", "scanline_size",
-                                 "scanline_blur", "bloom_strength", "grid_strength", "pixelate", "output_scale"]:
+                                 "scanline_blur", "bloom_strength", "grid_strength", "pixelate", "output_scale",
+                                 "pixel_size"]:
                 screen_type_settings[setting_name] = constants.DEFAULTS[setting_name]
 
             self.settings_dict[screen_type] = screen_type_settings

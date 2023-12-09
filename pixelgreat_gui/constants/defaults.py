@@ -3,6 +3,7 @@ import pixelgreat as pg
 
 DEFAULTS = {
     "screen_type": pg.ScreenType.LCD,
+    "pixel_size": 20,
     "pixel_padding": {
         "LCD": 0.25,
         "CRT_TV": 0.25,
