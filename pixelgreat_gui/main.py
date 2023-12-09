@@ -46,7 +46,7 @@ class MainWindow:
             self.palette.mid(),
             QColor(constants.COLORS["disabled_text"]),
             self.palette.brightText(),
-            self.palette.base(),
+            QColor(constants.COLORS["disabled"]),
             self.palette.window()
         )
 

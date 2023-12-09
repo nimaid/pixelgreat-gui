@@ -3,7 +3,7 @@ import pixelgreat as pg
 
 DEFAULTS = {
     "screen_type": pg.ScreenType.LCD,
-    "pixel_padding": {#
+    "pixel_padding": {
         "LCD": 0.25,
         "CRT_TV": 0.25,
         "CRT_MONITOR": 0.1
@@ -18,8 +18,8 @@ DEFAULTS = {
         "CRT_TV": 0.5,
         "CRT_MONITOR": 0.5
     },
-    "brighten": 1.0,#
-    "blur": {#
+    "brighten": 1.0,
+    "blur": {
         "LCD": 0,
         "CRT_TV": 0.5,
         "CRT_MONITOR": 0.75

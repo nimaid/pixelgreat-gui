@@ -64,6 +64,15 @@ class MyQMainWindow(QMainWindow):
         elif self.settings.get_screen_type() == pg.ScreenType.CRT_MONITOR:
             self.screen_type_entry.setCurrentIndex(2)
         self.screen_type_entry.currentIndexChanged.connect(self.screen_type_entry_changed)
+        #   Pixel Padding
+        self.pixel_padding_entry_label = QLabel("Pixel Padding:")
+        self.pixel_padding_entry = QDoubleSpinBox()
+        self.pixel_padding_entry.setMinimum(0.0)
+        self.pixel_padding_entry.setMaximum(100.0)
+        self.pixel_padding_entry.setSingleStep(1.0)
+        self.pixel_padding_entry.setSuffix("%")
+        self.pixel_padding_entry.setValue(self.settings.get_setting("pixel_padding") * 100)
+        self.pixel_padding_entry.valueChanged.connect(self.pixel_padding_entry_changed)
         #   Grid Direction
         self.direction_entry_label = QLabel("Grid Direction:")
         self.direction_entry = QComboBox()
@@ -82,6 +91,24 @@ class MyQMainWindow(QMainWindow):
         self.washout_entry.setSuffix("%")
         self.washout_entry.setValue(self.settings.get_setting("washout") * 100)
         self.washout_entry.valueChanged.connect(self.washout_entry_changed)
+        #   Brighten
+        self.brighten_entry_label = QLabel("Brighten:")
+        self.brighten_entry = QDoubleSpinBox()
+        self.brighten_entry.setMinimum(0.0)
+        self.brighten_entry.setMaximum(100.0)
+        self.brighten_entry.setSingleStep(1.0)
+        self.brighten_entry.setSuffix("%")
+        self.brighten_entry.setValue(self.settings.get_setting("brighten") * 100)
+        self.brighten_entry.valueChanged.connect(self.brighten_entry_changed)
+        #   Blur
+        self.blur_entry_label = QLabel("Blur:")
+        self.blur_entry = QDoubleSpinBox()
+        self.blur_entry.setMinimum(0.0)
+        self.blur_entry.setMaximum(100.0)
+        self.blur_entry.setSingleStep(1.0)
+        self.blur_entry.setSuffix("%")
+        self.blur_entry.setValue(self.settings.get_setting("blur") * 100)
+        self.blur_entry.valueChanged.connect(self.blur_entry_changed)
 
         # Declare settings area
         self.settings_area = QGridLayout()
@@ -89,20 +116,34 @@ class MyQMainWindow(QMainWindow):
         self.settings_area.setSpacing(self.padding_px)
 
         # Populate settings area
-        #  Row 0
-        self.settings_area.addWidget(self.screen_type_entry_label, 0, 0,
-                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
-        self.settings_area.addWidget(self.screen_type_entry, 0, 1,
-                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        self.settings_area.addWidget(self.washout_entry_label, 0, 3,
-                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
-        self.settings_area.addWidget(self.washout_entry, 0, 4,
-                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        #  Row 1
-        self.settings_area.addWidget(self.direction_entry_label, 1, 0,
-                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
-        self.settings_area.addWidget(self.direction_entry, 1, 1,
-                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        self.entries_array = [
+            [  # Column 0-1
+                [self.screen_type_entry_label, self.screen_type_entry],
+                [self.blur_entry_label, self.blur_entry]
+            ],
+            [  # Column 2-3
+                [self.washout_entry_label, self.washout_entry],
+                [self.direction_entry_label, self.direction_entry],
+            ],
+            [  # Column 4-5
+                [self.pixel_padding_entry_label, self.pixel_padding_entry],
+                [self.brighten_entry_label, self.brighten_entry]
+            ]
+        ]
+        for column, column_group in enumerate(self.entries_array):
+            for row, row_group in enumerate(column_group):
+                self.settings_area.addWidget(
+                    row_group[0],
+                    row,
+                    column * 2,
+                    alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight
+                )
+                self.settings_area.addWidget(
+                    row_group[1],
+                    row,
+                    (column * 2) + 1,
+                    alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft
+                )
 
         # Start the settings area disabled
         self.set_settings_entries_enabled(False)
@@ -144,11 +185,6 @@ class MyQMainWindow(QMainWindow):
         self.help_menu_about.triggered.connect(self.about_clicked)
         self.help_menu.addAction(self.help_menu_about)
 
-    def set_settings_entries_enabled(self, enabled):
-        self.screen_type_entry.setEnabled(enabled)
-        self.direction_entry.setEnabled(enabled)
-        self.washout_entry.setEnabled(enabled)
-
     def set_viewer_image(self, image=None):
         if image is not None:
             self.viewer.set_photo(helpers.image_to_pixmap(image))
@@ -165,13 +201,33 @@ class MyQMainWindow(QMainWindow):
             self.set_viewer_image(None)
             self.set_settings_entries_enabled(False)
 
+    def set_settings_entries_enabled(self, enabled):
+        for element in [
+            self.screen_type_entry,
+            self.direction_entry,
+            self.washout_entry,
+            self.pixel_padding_entry,
+            self.brighten_entry,
+            self.blur_entry
+        ]:
+            element.setEnabled(enabled)
+
+    # Called when the Screen Type is changed
+    # Therefore, the Screen Type entry is NOT updated here
     def update_settings_entries(self):
         if self.settings.get_setting("direction") == pg.Direction.VERTICAL:
             self.direction_entry.setCurrentIndex(0)
         elif self.settings.get_setting("direction") == pg.Direction.HORIZONTAL:
             self.direction_entry.setCurrentIndex(1)
 
-        self.washout_entry.setValue(self.settings.get_setting("washout") * 100)
+        # Set the percentage inputs
+        for element, name in [
+            [self.washout_entry, "washout"],
+            [self.pixel_padding_entry, "pixel_padding"],
+            [self.brighten_entry, "brighten"],
+            [self.blur_entry, "blur"]
+        ]:
+            element.setValue(self.settings.get_setting(name) * 100)
 
     def screen_type_entry_changed(self, idx):
         if idx == 0:
@@ -191,6 +247,15 @@ class MyQMainWindow(QMainWindow):
 
     def washout_entry_changed(self, value):
         self.settings.set_setting("washout", value / 100)
+
+    def pixel_padding_entry_changed(self, value):
+        self.settings.set_setting("pixel_padding", value / 100)
+
+    def brighten_entry_changed(self, value):
+        self.settings.set_setting("brighten", value / 100)
+
+    def blur_entry_changed(self, value):
+        self.settings.set_setting("blur", value / 100)
 
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(
@@ -260,7 +325,3 @@ class About(QDialog):
 
     def resize_window(self):
         self.setFixedSize(self.sizeHint())
-
-
-
-# ---- CUSTOM ELEMENTS ----
