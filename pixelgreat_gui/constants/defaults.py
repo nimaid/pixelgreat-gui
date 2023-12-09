@@ -24,17 +24,17 @@ DEFAULTS = {
         "CRT_TV": 0.5,
         "CRT_MONITOR": 0.75
     },
-    "bloom_size": 0.5,#
-    "pixel_aspect": 1.0,#
-    "rounding": {#
+    "bloom_size": 0.5,
+    "pixel_aspect": 1.0,
+    "rounding": {
         "LCD": 0,
         "CRT_TV": 0.5,
         "CRT_MONITOR": 0
     },
-    "scanline_spacing": 0.79,#
-    "scanline_size": 0.75,#
-    "scanline_blur": 0.25,#
-    "scanline_strength": {#
+    "scanline_spacing": 0.79,
+    "scanline_size": 0.75,
+    "scanline_blur": 0.25,
+    "scanline_strength": {
         "LCD": 0,
         "CRT_TV": 1,
         "CRT_MONITOR": 0.5

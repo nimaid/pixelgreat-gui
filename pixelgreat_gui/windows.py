@@ -54,7 +54,6 @@ class MyQMainWindow(QMainWindow):
 
         # Declare settings elements
         #   Screen Type
-        self.screen_type_entry_label = QLabel("Screen Type:")
         self.screen_type_entry = QComboBox()
         self.screen_type_entry.addItems(["LCD", "CRT TV", "CRT Monitor"])
         if self.settings.get_screen_type() == pg.ScreenType.LCD:
@@ -65,7 +64,6 @@ class MyQMainWindow(QMainWindow):
             self.screen_type_entry.setCurrentIndex(2)
         self.screen_type_entry.currentIndexChanged.connect(self.screen_type_entry_changed)
         #   Pixel Padding
-        self.pixel_padding_entry_label = QLabel("Pixel Padding:")
         self.pixel_padding_entry = QDoubleSpinBox()
         self.pixel_padding_entry.setMinimum(0.0)
         self.pixel_padding_entry.setMaximum(100.0)
@@ -74,7 +72,6 @@ class MyQMainWindow(QMainWindow):
         self.pixel_padding_entry.setValue(self.settings.get_setting("pixel_padding") * 100)
         self.pixel_padding_entry.valueChanged.connect(self.pixel_padding_entry_changed)
         #   Grid Direction
-        self.direction_entry_label = QLabel("Grid Direction:")
         self.direction_entry = QComboBox()
         self.direction_entry.addItems(["Vertical", "Horizontal"])
         if self.settings.get_setting("direction") == pg.Direction.VERTICAL:
@@ -83,7 +80,6 @@ class MyQMainWindow(QMainWindow):
             self.direction_entry.setCurrentIndex(1)
         self.direction_entry.currentIndexChanged.connect(self.direction_entry_changed)
         #   Washout
-        self.washout_entry_label = QLabel("Washout:")
         self.washout_entry = QDoubleSpinBox()
         self.washout_entry.setMinimum(0.0)
         self.washout_entry.setMaximum(100.0)
@@ -92,7 +88,6 @@ class MyQMainWindow(QMainWindow):
         self.washout_entry.setValue(self.settings.get_setting("washout") * 100)
         self.washout_entry.valueChanged.connect(self.washout_entry_changed)
         #   Brighten
-        self.brighten_entry_label = QLabel("Brighten:")
         self.brighten_entry = QDoubleSpinBox()
         self.brighten_entry.setMinimum(0.0)
         self.brighten_entry.setMaximum(100.0)
@@ -101,7 +96,6 @@ class MyQMainWindow(QMainWindow):
         self.brighten_entry.setValue(self.settings.get_setting("brighten") * 100)
         self.brighten_entry.valueChanged.connect(self.brighten_entry_changed)
         #   Blur
-        self.blur_entry_label = QLabel("Blur:")
         self.blur_entry = QDoubleSpinBox()
         self.blur_entry.setMinimum(0.0)
         self.blur_entry.setMaximum(100.0)
@@ -109,6 +103,62 @@ class MyQMainWindow(QMainWindow):
         self.blur_entry.setSuffix("%")
         self.blur_entry.setValue(self.settings.get_setting("blur") * 100)
         self.blur_entry.valueChanged.connect(self.blur_entry_changed)
+        #   Bloom Size
+        self.bloom_size_entry = QDoubleSpinBox()
+        self.bloom_size_entry.setMinimum(0.0)
+        self.bloom_size_entry.setMaximum(100.0)
+        self.bloom_size_entry.setSingleStep(1.0)
+        self.bloom_size_entry.setSuffix("%")
+        self.bloom_size_entry.setValue(self.settings.get_setting("bloom_size") * 100)
+        self.bloom_size_entry.valueChanged.connect(self.bloom_size_entry_changed)
+        #   Pixel Aspect
+        self.pixel_aspect_entry = QDoubleSpinBox()
+        self.pixel_aspect_entry.setMinimum(33.0)
+        self.pixel_aspect_entry.setMaximum(300.0)
+        self.pixel_aspect_entry.setSingleStep(1.0)
+        self.pixel_aspect_entry.setSuffix("%")
+        self.pixel_aspect_entry.setValue(self.settings.get_setting("pixel_aspect") * 100)
+        self.pixel_aspect_entry.valueChanged.connect(self.pixel_aspect_entry_changed)
+        #   Pixel Rounding
+        self.rounding_entry = QDoubleSpinBox()
+        self.rounding_entry.setMinimum(0.0)
+        self.rounding_entry.setMaximum(100.0)
+        self.rounding_entry.setSingleStep(1.0)
+        self.rounding_entry.setSuffix("%")
+        self.rounding_entry.setValue(self.settings.get_setting("rounding") * 100)
+        self.rounding_entry.valueChanged.connect(self.rounding_entry_changed)
+        #   Scanline Spacing
+        self.scanline_spacing_entry = QDoubleSpinBox()
+        self.scanline_spacing_entry.setMinimum(33.0)
+        self.scanline_spacing_entry.setMaximum(300.0)
+        self.scanline_spacing_entry.setSingleStep(1.0)
+        self.scanline_spacing_entry.setSuffix("%")
+        self.scanline_spacing_entry.setValue(self.settings.get_setting("scanline_spacing") * 100)
+        self.scanline_spacing_entry.valueChanged.connect(self.scanline_spacing_entry_changed)
+        #   Scanline Size
+        self.scanline_size_entry = QDoubleSpinBox()
+        self.scanline_size_entry.setMinimum(0.0)
+        self.scanline_size_entry.setMaximum(100.0)
+        self.scanline_size_entry.setSingleStep(1.0)
+        self.scanline_size_entry.setSuffix("%")
+        self.scanline_size_entry.setValue(self.settings.get_setting("scanline_size") * 100)
+        self.scanline_size_entry.valueChanged.connect(self.scanline_size_entry_changed)
+        #   Scanline Blur
+        self.scanline_blur_entry = QDoubleSpinBox()
+        self.scanline_blur_entry.setMinimum(0.0)
+        self.scanline_blur_entry.setMaximum(100.0)
+        self.scanline_blur_entry.setSingleStep(1.0)
+        self.scanline_blur_entry.setSuffix("%")
+        self.scanline_blur_entry.setValue(self.settings.get_setting("scanline_blur") * 100)
+        self.scanline_blur_entry.valueChanged.connect(self.scanline_blur_entry_changed)
+        #   Scanline Strength
+        self.scanline_strength_entry = QDoubleSpinBox()
+        self.scanline_strength_entry.setMinimum(0.0)
+        self.scanline_strength_entry.setMaximum(100.0)
+        self.scanline_strength_entry.setSingleStep(1.0)
+        self.scanline_strength_entry.setSuffix("%")
+        self.scanline_strength_entry.setValue(self.settings.get_setting("scanline_strength") * 100)
+        self.scanline_strength_entry.valueChanged.connect(self.scanline_strength_entry_changed)
 
         # Declare settings area
         self.settings_area = QGridLayout()
@@ -118,17 +168,24 @@ class MyQMainWindow(QMainWindow):
         # Populate settings area
         self.entries_array = [
             [  # Column 0-1
-                [self.screen_type_entry_label, self.screen_type_entry],
-                [self.blur_entry_label, self.blur_entry]
+                [QLabel("Screen Type:"), self.screen_type_entry],
+                [QLabel("Blur:"), self.blur_entry],
+                [QLabel("Bloom Size:"), self.bloom_size_entry],
+                [QLabel("Pixel Rounding:"), self.rounding_entry],
+                [QLabel("Scanline Strength:"), self.scanline_strength_entry],
             ],
             [  # Column 2-3
-                [self.washout_entry_label, self.washout_entry],
-                [self.direction_entry_label, self.direction_entry],
+                [QLabel("Washout:"), self.washout_entry],
+                [QLabel("Grid Direction:"), self.direction_entry],
+                [QLabel("Pixel Aspect:"), self.pixel_aspect_entry],
+                [QLabel("Scanline Spacing:"), self.scanline_spacing_entry],
             ],
             [  # Column 4-5
-                [self.pixel_padding_entry_label, self.pixel_padding_entry],
-                [self.brighten_entry_label, self.brighten_entry]
-            ]
+                [QLabel("Pixel Padding:"), self.pixel_padding_entry],
+                [QLabel("Brighten:"), self.brighten_entry],
+                [QLabel("Scanline Size:"), self.scanline_size_entry],
+                [QLabel("Scanline Blur:"), self.scanline_blur_entry],
+            ],
         ]
         for column, column_group in enumerate(self.entries_array):
             for row, row_group in enumerate(column_group):
@@ -208,7 +265,14 @@ class MyQMainWindow(QMainWindow):
             self.washout_entry,
             self.pixel_padding_entry,
             self.brighten_entry,
-            self.blur_entry
+            self.blur_entry,
+            self.bloom_size_entry,
+            self.pixel_aspect_entry,
+            self.rounding_entry,
+            self.scanline_spacing_entry,
+            self.scanline_size_entry,
+            self.scanline_blur_entry,
+            self.scanline_strength_entry,
         ]:
             element.setEnabled(enabled)
 
@@ -225,7 +289,14 @@ class MyQMainWindow(QMainWindow):
             [self.washout_entry, "washout"],
             [self.pixel_padding_entry, "pixel_padding"],
             [self.brighten_entry, "brighten"],
-            [self.blur_entry, "blur"]
+            [self.blur_entry, "blur"],
+            [self.bloom_size_entry, "bloom_size"],
+            [self.pixel_aspect_entry, "pixel_aspect"],
+            [self.rounding_entry, "rounding"],
+            [self.scanline_spacing_entry, "scanline_spacing"],
+            [self.scanline_size_entry, "scanline_size"],
+            [self.scanline_blur_entry, "scanline_blur"],
+            [self.scanline_strength_entry, "scanline_strength"],
         ]:
             element.setValue(self.settings.get_setting(name) * 100)
 
@@ -256,6 +327,27 @@ class MyQMainWindow(QMainWindow):
 
     def blur_entry_changed(self, value):
         self.settings.set_setting("blur", value / 100)
+
+    def bloom_size_entry_changed(self, value):
+        self.settings.set_setting("bloom_size", value / 100)
+
+    def pixel_aspect_entry_changed(self, value):
+        self.settings.set_setting("pixel_aspect", value / 100)
+
+    def rounding_entry_changed(self, value):
+        self.settings.set_setting("rounding", value / 100)
+
+    def scanline_spacing_entry_changed(self, value):
+        self.settings.set_setting("scanline_spacing", value / 100)
+
+    def scanline_size_entry_changed(self, value):
+        self.settings.set_setting("scanline_size", value / 100)
+
+    def scanline_blur_entry_changed(self, value):
+        self.settings.set_setting("scanline_blur", value / 100)
+
+    def scanline_strength_entry_changed(self, value):
+        self.settings.set_setting("scanline_strength", value / 100)
 
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(
