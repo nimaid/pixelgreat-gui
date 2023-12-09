@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QSlider, QStyle,
     QGraphicsView, QGraphicsScene, QGraphicsPixmapItem, QFrame
 )
-from PyQt5.QtGui import QBrush, QColor, QPixmap
+from PyQt5.QtGui import QBrush, QColor, QPixmap, QPainter
 
 
 # Custom seekbar class
@@ -76,6 +76,8 @@ class PhotoViewer(QGraphicsView):
 
         self.setBackgroundBrush(QBrush(background))
         self.setFrameShape(QFrame.NoFrame)
+
+        self.setRenderHints(QPainter.Antialiasing)
 
     def update_view(self):
         self.fitInView(self._scene.sceneRect())

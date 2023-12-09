@@ -1,3 +1,4 @@
+import pixelgreat as pg
 from PIL import Image
 from PyQt5.QtCore import Qt, QUrl, QTimer, QSize
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
@@ -20,7 +21,7 @@ from PyQt5.QtGui import (
     QPainter, QColor, QPalette
 )
 
-from . import constants, helpers, widgets
+from . import constants, helpers, widgets, settings
 
 
 # ---- MAIN WINDOW ----
@@ -37,6 +38,11 @@ class MyQMainWindow(QMainWindow):
 
         # Declare variables
         self.padding_px = 10
+        self.filename = None
+        self.source = None
+
+        # Make main settings object
+        self.settings = settings.PixelgreatSettings()
 
         # Set main window size restrictions
         self.setMinimumSize(300, 300)
@@ -44,20 +50,30 @@ class MyQMainWindow(QMainWindow):
 
         # Setup main viewer
         self.viewer = widgets.PhotoViewer(self, background=QColor(constants.COLORS["viewer"]))
-        self.viewer.setRenderHints(QPainter.Antialiasing)
         self.viewer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Declare settings elements
-        self.test_label = QLabel("Test!")
-        self.test_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.screen_type_entry_label = QLabel("Screen Type:")
+        self.screen_type_entry = QComboBox()
+        self.screen_type_entry.addItems(["LCD", "CRT TV", "CRT Monitor"])
+        if self.settings.get_screen_type() == pg.ScreenType.LCD:
+            self.screen_type_entry.setCurrentIndex(0)
+        elif self.settings.get_screen_type() == pg.ScreenType.CRT_TV:
+            self.screen_type_entry.setCurrentIndex(1)
+        elif self.settings.get_screen_type() == pg.ScreenType.CRT_MONITOR:
+            self.screen_type_entry.setCurrentIndex(2)
+        self.screen_type_entry.currentIndexChanged.connect(self.screen_type_entry_changed)
 
         # Declare settings area
-        self.settings_area = QHBoxLayout()
+        self.settings_area = QGridLayout()
         self.settings_area.setContentsMargins(0, 0, 0, self.padding_px)
         self.settings_area.setSpacing(self.padding_px)
 
         # Populate settings area
-        self.settings_area.addWidget(self.test_label)
+        self.settings_area.addWidget(self.screen_type_entry_label, 0, 0,
+                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        self.settings_area.addWidget(self.screen_type_entry, 0, 1,
+                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
         # Declare main layout
         self.main_layout = QVBoxLayout()
@@ -96,10 +112,6 @@ class MyQMainWindow(QMainWindow):
         self.help_menu_about.triggered.connect(self.about_clicked)
         self.help_menu.addAction(self.help_menu_about)
 
-        # Initialize other variables
-        self.filename = None
-        self.source = None
-
     def set_viewer_image(self, image=None):
         if image is not None:
             self.viewer.set_photo(helpers.image_to_pixmap(image))
@@ -113,6 +125,19 @@ class MyQMainWindow(QMainWindow):
             self.set_viewer_image(self.source)
         else:
             self.set_viewer_image(None)
+
+    def update_settings_entries(self):
+        pass
+
+    def screen_type_entry_changed(self, idx):
+        if idx == 0:
+            self.settings.set_screen_type(pg.ScreenType.LCD)
+        elif idx == 1:
+            self.settings.set_screen_type(pg.ScreenType.CRT_TV)
+        elif idx == 2:
+            self.settings.set_screen_type(pg.ScreenType.CRT_MONITOR)
+
+        self.update_settings_entries()
 
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(

@@ -7,11 +7,3 @@ class PlatformCode(Enum):
     LINUX = "linux"
     MAC = "darwin"
     UNKNOWN = "unknown"
-
-
-# Operation codes
-class OpCode(Enum):
-    ADD = "+"
-    SUB = "-"
-    MULT = "*"
-    DIV = "/"
