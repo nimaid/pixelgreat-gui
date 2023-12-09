@@ -17,6 +17,9 @@ class MainWindow:
         self.window = windows.MyQMainWindow()
 
         # Setup colors
+        if constants.PLATFORM == constants.PlatformCode.WINDOWS:
+            os.environ["QT_QPA_PLATFORM"] = "windows:darkmode=1"
+
         self.app.setStyle("fusion")
         self.palette = QPalette()
         self.palette.setColor(QPalette.Window, QColor(constants.COLORS["background"]))
@@ -42,6 +45,6 @@ class MainWindow:
 def run(args=None):
     if args is None:
         args = sys.argv
-    os.environ["QT_QPA_PLATFORM"] = "windows:darkmode=1"
+
     main_window = MainWindow(args)
     main_window.run()
