@@ -44,6 +44,7 @@ class MyQMainWindow(QMainWindow):
         self.input_size = None
         self.output_size = None
         self.filter = None
+        self.filtered_image = None
 
         # Make main settings object
         self.settings = settings.PixelgreatSettings()
@@ -201,6 +202,9 @@ class MyQMainWindow(QMainWindow):
         #   Apply Button
         self.apply_button = QPushButton("Apply Settings")
         self.apply_button.clicked.connect(self.apply_button_clicked)
+        #   Reset Settings Button
+        self.reset_button = QPushButton("Reset Settings")
+        self.reset_button.clicked.connect(self.reset_button_clicked)
 
         # Declare settings area
         self.settings_area = QGridLayout()
@@ -237,7 +241,7 @@ class MyQMainWindow(QMainWindow):
                 [QLabel("Bloom Strength:"), self.bloom_strength_entry],
                 [QLabel("Bloom Size:"), self.bloom_size_entry],
                 [QLabel("1:1 View Scale"), QLabel("Original Image")],
-                [QLabel("Default Settings"), self.apply_button]
+                [self.reset_button, self.apply_button]
             ],
         ]
         for column, column_group in enumerate(self.entries_array):
@@ -331,6 +335,8 @@ class MyQMainWindow(QMainWindow):
             self.set_settings_entries_enabled(False)
             self.input_size = None
             self.output_size = None
+            self.filter = None
+            self.filtered_image = None
 
     def set_settings_entries_enabled(self, enabled):
         for element in [
@@ -353,6 +359,7 @@ class MyQMainWindow(QMainWindow):
             self.pixelate_entry,
             self.apply_button,
             self.pixel_size_entry,
+            self.reset_button,
         ]:
             element.setEnabled(enabled)
 
@@ -394,7 +401,6 @@ class MyQMainWindow(QMainWindow):
             [self.pixel_size_entry, "pixel_size"],
         ]:
             element.setValue(self.settings.get_setting(name))
-
 
     def screen_type_entry_changed(self, idx):
         if idx == 0:
@@ -467,7 +473,7 @@ class MyQMainWindow(QMainWindow):
         else:
             self.settings.set_setting("pixelate", True)
 
-    def apply_button_clicked(self):
+    def update_filter(self):
         self.filter = pg.Pixelgreat(
             output_size=self.output_size,
             pixel_size=self.settings.get_setting("pixel_size"),
@@ -490,7 +496,31 @@ class MyQMainWindow(QMainWindow):
             color_mode=self.color_mode
         )
 
-        self.set_viewer_image(self.filter.apply(self.source))
+    def get_filtered_image(self):
+        if self.source is not None and self.filter is not None:
+            return self.filter.apply(self.source)
+        else:
+            return self.source
+
+    def update_filtered_image(self):
+        self.filtered_image = self.get_filtered_image()
+
+    def apply_button_clicked(self):
+        self.update_filter()
+        self.update_filtered_image()
+        self.set_viewer_image(self.filtered_image)
+
+    def reset_button_clicked(self):
+        self.settings.set_to_defaults()
+
+        if self.settings.get_screen_type() == pg.ScreenType.LCD:
+            self.screen_type_entry.setCurrentIndex(0)
+        elif self.settings.get_screen_type() == pg.ScreenType.CRT_TV:
+            self.screen_type_entry.setCurrentIndex(1)
+        elif self.settings.get_screen_type() == pg.ScreenType.CRT_MONITOR:
+            self.screen_type_entry.setCurrentIndex(2)
+
+        self.update_settings_entries()
 
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(

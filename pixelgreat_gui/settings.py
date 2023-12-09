@@ -25,6 +25,7 @@ class PixelgreatSettings:
                 screen_type_settings[setting_name] = constants.DEFAULTS[setting_name]
 
             self.settings_dict[screen_type] = screen_type_settings
+        self.set_screen_type(constants.DEFAULTS["screen_type"])
 
     def get_screen_type(self):
         return self.screen_type
