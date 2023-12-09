@@ -1,3 +1,4 @@
+import os
 import pixelgreat as pg
 from PIL import Image
 from PyQt5.QtCore import Qt, QUrl, QTimer, QSize
@@ -38,6 +39,7 @@ class MyQMainWindow(QMainWindow):
 
         # Declare variables
         self.padding_px = 10
+        self.status_padding_px = 5
         self.filename = None
         self.source = None
         self.color_mode = None
@@ -45,6 +47,7 @@ class MyQMainWindow(QMainWindow):
         self.output_size = None
         self.filter = None
         self.filtered_image = None
+        self.status = None
 
         # Make main settings object
         self.settings = settings.PixelgreatSettings()
@@ -205,10 +208,13 @@ class MyQMainWindow(QMainWindow):
         #   Reset Settings Button
         self.reset_button = QPushButton("Reset Settings")
         self.reset_button.clicked.connect(self.reset_button_clicked)
+        #   Original Image Button
+        self.original_button = QPushButton("Original Image")
+        self.original_button.clicked.connect(self.original_button_clicked)
 
         # Declare settings area
         self.settings_area = QGridLayout()
-        self.settings_area.setContentsMargins(self.padding_px, 0, self.padding_px, self.padding_px)
+        self.settings_area.setContentsMargins(self.padding_px, 0, self.padding_px, 0)
         self.settings_area.setSpacing(self.padding_px)
 
         # Populate settings area
@@ -240,7 +246,7 @@ class MyQMainWindow(QMainWindow):
             [   # Col 8-9
                 [QLabel("Bloom Strength:"), self.bloom_strength_entry],
                 [QLabel("Bloom Size:"), self.bloom_size_entry],
-                [QLabel("1:1 View Scale"), QLabel("Original Image")],
+                [QLabel(), self.original_button],
                 [self.reset_button, self.apply_button]
             ],
         ]
@@ -263,6 +269,34 @@ class MyQMainWindow(QMainWindow):
         # Start the settings area disabled
         self.set_settings_entries_enabled(False)
 
+        # Declare status bar elements
+        self.status_label = QLabel()
+        self.set_status("No File Loaded")
+
+        # Declare status bar container
+        self.status_container = QWidget(self)
+        self.status_container.setContentsMargins(
+            self.padding_px,
+            self.status_padding_px,
+            self.padding_px,
+            self.status_padding_px
+        )
+        self.status_container.setStyleSheet("background-color:{bg}; color:{text}".format(
+            bg=constants.COLORS["status_background"],
+            text=constants.COLORS["status_text"])
+        )
+
+        # Declare status area
+        self.status_area = QHBoxLayout(self.status_container)
+        self.status_area.setContentsMargins(0, 0, 0, 0)
+        self.status_area.setSpacing(self.padding_px)
+
+        # Populate status area layout
+        self.status_area.addWidget(
+            self.status_label,
+            alignment=Qt.AlignmentFlag.AlignCenter
+        )
+
         # Declare main layout
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
@@ -271,6 +305,7 @@ class MyQMainWindow(QMainWindow):
         # Populate main layout
         self.main_layout.addWidget(self.viewer)
         self.main_layout.addLayout(self.settings_area)
+        self.main_layout.addWidget(self.status_container)
 
         # Set main layout as the central widget
         self.main_widget = QWidget()
@@ -328,6 +363,7 @@ class MyQMainWindow(QMainWindow):
                     round(self.input_size[0] * self.settings.get_setting("output_scale")),
                     round(self.input_size[1] * self.settings.get_setting("output_scale"))
             )
+            self.set_status(f"Loaded file: {self.filename}")
         else:
             self.source = None
             self.color_mode = None
@@ -337,6 +373,7 @@ class MyQMainWindow(QMainWindow):
             self.output_size = None
             self.filter = None
             self.filtered_image = None
+            self.set_status("No File Loaded")
 
     def set_settings_entries_enabled(self, enabled):
         for element in [
@@ -360,6 +397,7 @@ class MyQMainWindow(QMainWindow):
             self.apply_button,
             self.pixel_size_entry,
             self.reset_button,
+            self.original_button,
         ]:
             element.setEnabled(enabled)
 
@@ -505,10 +543,19 @@ class MyQMainWindow(QMainWindow):
     def update_filtered_image(self):
         self.filtered_image = self.get_filtered_image()
 
-    def apply_button_clicked(self):
+    def set_status(self, status):
+        self.status = status
+        self.status_label.setText(self.status)
+
+    def apply_button_helper(self, end_status):
         self.update_filter()
         self.update_filtered_image()
         self.set_viewer_image(self.filtered_image)
+        self.set_status(end_status)
+
+    def apply_button_clicked(self):
+        self.set_status("Applying settings...")
+        QTimer.singleShot(10, lambda: self.apply_button_helper(f"Loaded file: {self.filename} (converted)"))
 
     def reset_button_clicked(self):
         self.settings.set_to_defaults()
@@ -521,6 +568,10 @@ class MyQMainWindow(QMainWindow):
             self.screen_type_entry.setCurrentIndex(2)
 
         self.update_settings_entries()
+
+    def original_button_clicked(self):
+        self.set_viewer_image(self.source)
+        self.set_status(f"Loaded file: {self.filename}")
 
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(
@@ -542,7 +593,7 @@ class MyQMainWindow(QMainWindow):
         result = popup.exec()
 
     def resizeEvent(self, event):
-        self.viewer.update_view()
+        self.viewer.fitInView()
 
 
 # ---- POPUP WINDOWS ----

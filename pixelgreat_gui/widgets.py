@@ -79,9 +79,6 @@ class PhotoViewer(QGraphicsView):
 
         self.setRenderHints(QPainter.Antialiasing)
 
-    def update_view(self):
-        self.fitInView(self._scene.sceneRect())
-
     def has_photo(self):
         return not self._empty
 
@@ -125,10 +122,3 @@ class PhotoViewer(QGraphicsView):
                 self.fitInView()
             else:
                 self._zoom = 0
-
-    def mousePressEvent(self, event):
-        # TODO: Remove if not used
-        if self._photo.isUnderMouse():
-            self.photoClicked.emit(self.mapToScene(event.pos()).toPoint())
-
-        super(PhotoViewer, self).mousePressEvent(event)
