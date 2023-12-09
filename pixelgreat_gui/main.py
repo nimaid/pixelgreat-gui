@@ -20,6 +20,9 @@ class MainWindow:
         self.padding_px = 10
 
         # Setup colors
+        if constants.PLATFORM == constants.PlatformCode.WINDOWS:
+            os.environ["QT_QPA_PLATFORM"] = "windows:darkmode=1"
+
         self.app.setStyle("fusion")
 
         self.palette = QPalette()
@@ -46,6 +49,6 @@ class MainWindow:
 def run(args=None):
     if args is None:
         args = sys.argv
-    os.environ["QT_QPA_PLATFORM"] = "windows:darkmode=1"
+
     main_window = MainWindow(args)
     main_window.run()
