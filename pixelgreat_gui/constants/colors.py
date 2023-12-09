@@ -5,6 +5,6 @@ COLORS = {
     "button-text": "#ffffff",
     "viewer": "#202020",
     "link": "#dddddd",
-    "disabled": "#888888",
-    "disabled_text": "#cccccc"
+    "disabled": "#555555",
+    "disabled_text": "#888888"
 }

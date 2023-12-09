@@ -53,6 +53,7 @@ class MyQMainWindow(QMainWindow):
         self.viewer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Declare settings elements
+        #   Screen Type
         self.screen_type_entry_label = QLabel("Screen Type:")
         self.screen_type_entry = QComboBox()
         self.screen_type_entry.addItems(["LCD", "CRT TV", "CRT Monitor"])
@@ -63,6 +64,24 @@ class MyQMainWindow(QMainWindow):
         elif self.settings.get_screen_type() == pg.ScreenType.CRT_MONITOR:
             self.screen_type_entry.setCurrentIndex(2)
         self.screen_type_entry.currentIndexChanged.connect(self.screen_type_entry_changed)
+        #   Grid Direction
+        self.direction_entry_label = QLabel("Grid Direction:")
+        self.direction_entry = QComboBox()
+        self.direction_entry.addItems(["Vertical", "Horizontal"])
+        if self.settings.get_setting("direction") == pg.Direction.VERTICAL:
+            self.direction_entry.setCurrentIndex(0)
+        elif self.settings.get_setting("direction") == pg.Direction.HORIZONTAL:
+            self.direction_entry.setCurrentIndex(1)
+        self.direction_entry.currentIndexChanged.connect(self.direction_entry_changed)
+        #   Washout
+        self.washout_entry_label = QLabel("Washout:")
+        self.washout_entry = QDoubleSpinBox()
+        self.washout_entry.setMinimum(0.0)
+        self.washout_entry.setMaximum(100.0)
+        self.washout_entry.setSingleStep(1.0)
+        self.washout_entry.setSuffix("%")
+        self.washout_entry.setValue(self.settings.get_setting("washout") * 100)
+        self.washout_entry.valueChanged.connect(self.washout_entry_changed)
 
         # Declare settings area
         self.settings_area = QGridLayout()
@@ -70,9 +89,19 @@ class MyQMainWindow(QMainWindow):
         self.settings_area.setSpacing(self.padding_px)
 
         # Populate settings area
+        #  Row 0
         self.settings_area.addWidget(self.screen_type_entry_label, 0, 0,
                                      alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
         self.settings_area.addWidget(self.screen_type_entry, 0, 1,
+                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        self.settings_area.addWidget(self.washout_entry_label, 0, 3,
+                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        self.settings_area.addWidget(self.washout_entry, 0, 4,
+                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        #  Row 1
+        self.settings_area.addWidget(self.direction_entry_label, 1, 0,
+                                     alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
+        self.settings_area.addWidget(self.direction_entry, 1, 1,
                                      alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
         # Start the settings area disabled
@@ -117,6 +146,8 @@ class MyQMainWindow(QMainWindow):
 
     def set_settings_entries_enabled(self, enabled):
         self.screen_type_entry.setEnabled(enabled)
+        self.direction_entry.setEnabled(enabled)
+        self.washout_entry.setEnabled(enabled)
 
     def set_viewer_image(self, image=None):
         if image is not None:
@@ -135,7 +166,12 @@ class MyQMainWindow(QMainWindow):
             self.set_settings_entries_enabled(False)
 
     def update_settings_entries(self):
-        pass
+        if self.settings.get_setting("direction") == pg.Direction.VERTICAL:
+            self.direction_entry.setCurrentIndex(0)
+        elif self.settings.get_setting("direction") == pg.Direction.HORIZONTAL:
+            self.direction_entry.setCurrentIndex(1)
+
+        self.washout_entry.setValue(self.settings.get_setting("washout") * 100)
 
     def screen_type_entry_changed(self, idx):
         if idx == 0:
@@ -146,6 +182,15 @@ class MyQMainWindow(QMainWindow):
             self.settings.set_screen_type(pg.ScreenType.CRT_MONITOR)
 
         self.update_settings_entries()
+
+    def direction_entry_changed(self, idx):
+        if idx == 0:
+            self.settings.set_setting("direction", pg.Direction.VERTICAL)
+        elif idx == 1:
+            self.settings.set_setting("direction", pg.Direction.HORIZONTAL)
+
+    def washout_entry_changed(self, value):
+        self.settings.set_setting("washout", value / 100)
 
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(

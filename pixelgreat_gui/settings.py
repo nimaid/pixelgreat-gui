@@ -32,7 +32,7 @@ class PixelgreatSettings:
         self.screen_type = screen_type
 
     def get_setting(self, setting):
-        return self.settings_dict[setting][self.screen_type.value]
+        return self.settings_dict[self.screen_type.value][setting]
 
     def set_setting(self, setting, value):
-        self.settings_dict[setting][self.screen_type.value] = value
+        self.settings_dict[self.screen_type.value][setting] = value
