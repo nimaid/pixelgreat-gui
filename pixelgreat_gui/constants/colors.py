@@ -4,5 +4,7 @@ COLORS = {
     "text": "#dddddd",
     "button-text": "#ffffff",
     "viewer": "#202020",
-    "link": "#dddddd"
+    "link": "#dddddd",
+    "disabled": "#888888",
+    "disabled_text": "#cccccc"
 }

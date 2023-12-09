@@ -36,6 +36,20 @@ class MainWindow:
         self.palette.setColor(QPalette.Link, QColor(constants.COLORS["link"]))
         self.palette.setColor(QPalette.Highlight, QColor(constants.COLORS["link"]))
         self.palette.setColor(QPalette.HighlightedText, Qt.black)
+
+        self.palette.setColorGroup(
+            QPalette.Disabled,
+            self.palette.windowText(),
+            QColor(constants.COLORS["disabled"]),
+            self.palette.light(),
+            self.palette.dark(),
+            self.palette.mid(),
+            QColor(constants.COLORS["disabled_text"]),
+            self.palette.brightText(),
+            self.palette.base(),
+            self.palette.window()
+        )
+
         self.app.setPalette(self.palette)
 
     def run(self):

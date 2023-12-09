@@ -75,6 +75,9 @@ class MyQMainWindow(QMainWindow):
         self.settings_area.addWidget(self.screen_type_entry, 0, 1,
                                      alignment=Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
+        # Start the settings area disabled
+        self.set_settings_entries_enabled(False)
+
         # Declare main layout
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
@@ -112,6 +115,9 @@ class MyQMainWindow(QMainWindow):
         self.help_menu_about.triggered.connect(self.about_clicked)
         self.help_menu.addAction(self.help_menu_about)
 
+    def set_settings_entries_enabled(self, enabled):
+        self.screen_type_entry.setEnabled(enabled)
+
     def set_viewer_image(self, image=None):
         if image is not None:
             self.viewer.set_photo(helpers.image_to_pixmap(image))
@@ -123,8 +129,10 @@ class MyQMainWindow(QMainWindow):
         if self.filename is not None:
             self.source = Image.open(self.filename)
             self.set_viewer_image(self.source)
+            self.set_settings_entries_enabled(True)
         else:
             self.set_viewer_image(None)
+            self.set_settings_entries_enabled(False)
 
     def update_settings_entries(self):
         pass
@@ -188,7 +196,8 @@ class About(QDialog):
         self.about_text = QLabel(
             f"{constants.TITLE} v{constants.VERSION}\nby {constants.COPYRIGHT}\nCopyright 2023\n\n"
             f"{constants.DESCRIPTION}\n\n"
-            f"Project Home Page:\n{constants.PROJECT_URL}\n\nPatreon:\n{constants.DONATE_URL}")
+            f"Project Home Page:\n{constants.PROJECT_URL}\n\n"
+            f"Patreon:\n{constants.DONATE_URL}")
         self.about_text.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.confirm_buttons = QDialogButtonBox(QDialogButtonBox.Ok)
