@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixelgreat-gui"
-version = "1.0.11"
-readme = {file="README_pypi.MD", content-type="text/markdown"}
+version = "1.0.12"
+readme = "README_pypi.md"
 description = "A GUI for Pixelgreat: A highly realistic RGB pixel filter"
 license= {file = "LICENSE"}
 authors = [
