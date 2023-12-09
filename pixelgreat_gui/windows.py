@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import (
     QImage, QPixmap, QIcon,
-    QPainter
+    QPainter, QColor, QPalette
 )
 
 from . import constants, helpers, widgets
@@ -35,20 +35,20 @@ class MyQMainWindow(QMainWindow):
         self.setWindowTitle(f"{constants.TITLE}")
         self.setWindowIcon(QIcon(constants.ICON_PATHS["program"]))
 
-        # Set window size
-        self.setMinimumSize(300, 300)
-
-        # Declare elements
+        # Declare variables
         self.padding_px = 10
 
+        # Set main window size restrictions
+        self.setMinimumSize(300, 300)
+
         # Setup main viewer
-        self.viewer = widgets.PhotoViewer(self)
+        self.viewer = widgets.PhotoViewer(self, background=QColor(constants.COLORS["background"]))
         self.viewer.setRenderHints(QPainter.Antialiasing)
         self.viewer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Declare main layout
         self.main_layout = QGridLayout()
-        self.main_layout.setContentsMargins(self.padding_px, self.padding_px, self.padding_px, self.padding_px)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(self.padding_px)
 
         # Populate main layout
@@ -118,6 +118,9 @@ class MyQMainWindow(QMainWindow):
         popup = About(parent=self)
 
         result = popup.exec()
+
+    def resizeEvent(self, event):
+        self.viewer.update_view()
 
 
 # ---- POPUP WINDOWS ----

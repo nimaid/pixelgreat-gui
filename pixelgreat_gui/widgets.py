@@ -57,7 +57,7 @@ class SeekBar(QSlider):
 class PhotoViewer(QGraphicsView):
     photoClicked = pyqtSignal(QPoint)
 
-    def __init__(self, parent):
+    def __init__(self, parent, background=QColor(30, 30, 30)):
         super(PhotoViewer, self).__init__(parent)
 
         self._zoom = 0
@@ -74,8 +74,11 @@ class PhotoViewer(QGraphicsView):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        self.setBackgroundBrush(QBrush(QColor(30, 30, 30)))
+        self.setBackgroundBrush(QBrush(background))
         self.setFrameShape(QFrame.NoFrame)
+
+    def update_view(self):
+        self.fitInView(self._scene.sceneRect())
 
     def has_photo(self):
         return not self._empty
