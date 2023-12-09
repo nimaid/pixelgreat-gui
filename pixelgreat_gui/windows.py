@@ -48,6 +48,8 @@ class MyQMainWindow(QMainWindow):
         self.filter = None
         self.filtered_image = None
         self.status = None
+        self.last_save_location = constants.PROG_PATH
+        self.last_open_location = constants.PROG_PATH
 
         # Make main settings object
         self.settings = settings.PixelgreatSettings()
@@ -82,7 +84,7 @@ class MyQMainWindow(QMainWindow):
         self.pixel_padding_entry = QDoubleSpinBox()
         self.pixel_padding_entry.setMinimum(0.0)
         self.pixel_padding_entry.setMaximum(100.0)
-        self.pixel_padding_entry.setSingleStep(1.0)
+        self.pixel_padding_entry.setSingleStep(10.0)
         self.pixel_padding_entry.setSuffix("%")
         self.pixel_padding_entry.setValue(self.settings.get_setting("pixel_padding") * 100)
         self.pixel_padding_entry.valueChanged.connect(self.pixel_padding_entry_changed)
@@ -98,7 +100,7 @@ class MyQMainWindow(QMainWindow):
         self.washout_entry = QDoubleSpinBox()
         self.washout_entry.setMinimum(0.0)
         self.washout_entry.setMaximum(100.0)
-        self.washout_entry.setSingleStep(1.0)
+        self.washout_entry.setSingleStep(10.0)
         self.washout_entry.setSuffix("%")
         self.washout_entry.setValue(self.settings.get_setting("washout") * 100)
         self.washout_entry.valueChanged.connect(self.washout_entry_changed)
@@ -106,7 +108,7 @@ class MyQMainWindow(QMainWindow):
         self.brighten_entry = QDoubleSpinBox()
         self.brighten_entry.setMinimum(0.0)
         self.brighten_entry.setMaximum(100.0)
-        self.brighten_entry.setSingleStep(1.0)
+        self.brighten_entry.setSingleStep(10.0)
         self.brighten_entry.setSuffix("%")
         self.brighten_entry.setValue(self.settings.get_setting("brighten") * 100)
         self.brighten_entry.valueChanged.connect(self.brighten_entry_changed)
@@ -114,7 +116,7 @@ class MyQMainWindow(QMainWindow):
         self.blur_entry = QDoubleSpinBox()
         self.blur_entry.setMinimum(0.0)
         self.blur_entry.setMaximum(100.0)
-        self.blur_entry.setSingleStep(1.0)
+        self.blur_entry.setSingleStep(10.0)
         self.blur_entry.setSuffix("%")
         self.blur_entry.setValue(self.settings.get_setting("blur") * 100)
         self.blur_entry.valueChanged.connect(self.blur_entry_changed)
@@ -122,7 +124,7 @@ class MyQMainWindow(QMainWindow):
         self.bloom_size_entry = QDoubleSpinBox()
         self.bloom_size_entry.setMinimum(0.0)
         self.bloom_size_entry.setMaximum(100.0)
-        self.bloom_size_entry.setSingleStep(1.0)
+        self.bloom_size_entry.setSingleStep(10.0)
         self.bloom_size_entry.setSuffix("%")
         self.bloom_size_entry.setValue(self.settings.get_setting("bloom_size") * 100)
         self.bloom_size_entry.valueChanged.connect(self.bloom_size_entry_changed)
@@ -130,7 +132,7 @@ class MyQMainWindow(QMainWindow):
         self.pixel_aspect_entry = QDoubleSpinBox()
         self.pixel_aspect_entry.setMinimum(33.0)
         self.pixel_aspect_entry.setMaximum(300.0)
-        self.pixel_aspect_entry.setSingleStep(1.0)
+        self.pixel_aspect_entry.setSingleStep(10.0)
         self.pixel_aspect_entry.setSuffix("%")
         self.pixel_aspect_entry.setValue(self.settings.get_setting("pixel_aspect") * 100)
         self.pixel_aspect_entry.valueChanged.connect(self.pixel_aspect_entry_changed)
@@ -138,7 +140,7 @@ class MyQMainWindow(QMainWindow):
         self.rounding_entry = QDoubleSpinBox()
         self.rounding_entry.setMinimum(0.0)
         self.rounding_entry.setMaximum(100.0)
-        self.rounding_entry.setSingleStep(1.0)
+        self.rounding_entry.setSingleStep(10.0)
         self.rounding_entry.setSuffix("%")
         self.rounding_entry.setValue(self.settings.get_setting("rounding") * 100)
         self.rounding_entry.valueChanged.connect(self.rounding_entry_changed)
@@ -146,7 +148,7 @@ class MyQMainWindow(QMainWindow):
         self.scanline_spacing_entry = QDoubleSpinBox()
         self.scanline_spacing_entry.setMinimum(33.0)
         self.scanline_spacing_entry.setMaximum(300.0)
-        self.scanline_spacing_entry.setSingleStep(1.0)
+        self.scanline_spacing_entry.setSingleStep(10.0)
         self.scanline_spacing_entry.setSuffix("%")
         self.scanline_spacing_entry.setValue(self.settings.get_setting("scanline_spacing") * 100)
         self.scanline_spacing_entry.valueChanged.connect(self.scanline_spacing_entry_changed)
@@ -154,7 +156,7 @@ class MyQMainWindow(QMainWindow):
         self.scanline_size_entry = QDoubleSpinBox()
         self.scanline_size_entry.setMinimum(0.0)
         self.scanline_size_entry.setMaximum(100.0)
-        self.scanline_size_entry.setSingleStep(1.0)
+        self.scanline_size_entry.setSingleStep(10.0)
         self.scanline_size_entry.setSuffix("%")
         self.scanline_size_entry.setValue(self.settings.get_setting("scanline_size") * 100)
         self.scanline_size_entry.valueChanged.connect(self.scanline_size_entry_changed)
@@ -162,7 +164,7 @@ class MyQMainWindow(QMainWindow):
         self.scanline_blur_entry = QDoubleSpinBox()
         self.scanline_blur_entry.setMinimum(0.0)
         self.scanline_blur_entry.setMaximum(100.0)
-        self.scanline_blur_entry.setSingleStep(1.0)
+        self.scanline_blur_entry.setSingleStep(10.0)
         self.scanline_blur_entry.setSuffix("%")
         self.scanline_blur_entry.setValue(self.settings.get_setting("scanline_blur") * 100)
         self.scanline_blur_entry.valueChanged.connect(self.scanline_blur_entry_changed)
@@ -170,7 +172,7 @@ class MyQMainWindow(QMainWindow):
         self.scanline_strength_entry = QDoubleSpinBox()
         self.scanline_strength_entry.setMinimum(0.0)
         self.scanline_strength_entry.setMaximum(100.0)
-        self.scanline_strength_entry.setSingleStep(1.0)
+        self.scanline_strength_entry.setSingleStep(10.0)
         self.scanline_strength_entry.setSuffix("%")
         self.scanline_strength_entry.setValue(self.settings.get_setting("scanline_strength") * 100)
         self.scanline_strength_entry.valueChanged.connect(self.scanline_strength_entry_changed)
@@ -178,7 +180,7 @@ class MyQMainWindow(QMainWindow):
         self.bloom_strength_entry = QDoubleSpinBox()
         self.bloom_strength_entry.setMinimum(0.0)
         self.bloom_strength_entry.setMaximum(100.0)
-        self.bloom_strength_entry.setSingleStep(1.0)
+        self.bloom_strength_entry.setSingleStep(10.0)
         self.bloom_strength_entry.setSuffix("%")
         self.bloom_strength_entry.setValue(self.settings.get_setting("bloom_strength") * 100)
         self.bloom_strength_entry.valueChanged.connect(self.bloom_strength_entry_changed)
@@ -186,15 +188,15 @@ class MyQMainWindow(QMainWindow):
         self.grid_strength_entry = QDoubleSpinBox()
         self.grid_strength_entry.setMinimum(0.0)
         self.grid_strength_entry.setMaximum(100.0)
-        self.grid_strength_entry.setSingleStep(1.0)
+        self.grid_strength_entry.setSingleStep(10.0)
         self.grid_strength_entry.setSuffix("%")
         self.grid_strength_entry.setValue(self.settings.get_setting("grid_strength") * 100)
         self.grid_strength_entry.valueChanged.connect(self.grid_strength_entry_changed)
         #   Output Scale
         self.output_scale_entry = QDoubleSpinBox()
-        self.output_scale_entry.setMinimum(0.1)
-        self.output_scale_entry.setMaximum(9999)
-        self.output_scale_entry.setSingleStep(100.0)
+        self.output_scale_entry.setMinimum(25.0)
+        self.output_scale_entry.setMaximum(9999.0)
+        self.output_scale_entry.setSingleStep(25.0)
         self.output_scale_entry.setSuffix("%")
         self.output_scale_entry.setValue(self.settings.get_setting("output_scale") * 100)
         self.output_scale_entry.valueChanged.connect(self.output_scale_entry_changed)
@@ -320,12 +322,21 @@ class MyQMainWindow(QMainWindow):
 
         # Populate the "File" menu
         self.file_menu_open = QAction("Open...", self)
-        self.file_menu_open.triggered.connect(self.open_file_clicked)
+        self.file_menu_open.triggered.connect(self.open_clicked)
         self.file_menu.addAction(self.file_menu_open)
 
         self.file_menu_close = QAction("Close", self)
-        self.file_menu_close.triggered.connect(self.close_file_clicked)
+        self.file_menu_close.triggered.connect(self.close_clicked)
         self.file_menu.addAction(self.file_menu_close)
+
+        # Declare the "Export" menu
+        self.export_menu = self.main_menu.addMenu("Export...")
+        self.export_menu.setEnabled(False)
+
+        # Populate the export menu
+        self.export_menu_image = QAction("Image...", self)
+        self.export_menu_image.triggered.connect(self.export_image_clicked)
+        self.export_menu.addAction(self.export_menu_image)
 
         # Declare the "Help" menu
         self.help_menu = self.main_menu.addMenu("Help")
@@ -363,6 +374,7 @@ class MyQMainWindow(QMainWindow):
                     round(self.input_size[0] * self.settings.get_setting("output_scale")),
                     round(self.input_size[1] * self.settings.get_setting("output_scale"))
             )
+            self.export_menu.setEnabled(True)
             self.set_status(f"Loaded file: {self.filename}")
         else:
             self.source = None
@@ -373,6 +385,7 @@ class MyQMainWindow(QMainWindow):
             self.output_size = None
             self.filter = None
             self.filtered_image = None
+            self.export_menu.setEnabled(False)
             self.set_status("No File Loaded")
 
     def set_settings_entries_enabled(self, enabled):
@@ -554,6 +567,7 @@ class MyQMainWindow(QMainWindow):
         self.set_status(end_status)
 
     def apply_button_clicked(self):
+        self.viewer.fitInView()
         self.set_status("Applying settings...")
         QTimer.singleShot(10, lambda: self.apply_button_helper(f"Loaded file: {self.filename} (converted)"))
 
@@ -573,18 +587,42 @@ class MyQMainWindow(QMainWindow):
         self.set_viewer_image(self.source)
         self.set_status(f"Loaded file: {self.filename}")
 
-    def open_file_clicked(self):
+    def open_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(
             self,
             "Open File",
-            constants.PROG_PATH,
+            self.last_open_location,
             "Image Files (*.png *.jpg *.bmp)"
         )
 
         if filename != "":
+            file_path, file_title = os.path.split(filename)
+            self.last_open_location = file_path
             self.set_source(filename)
 
-    def close_file_clicked(self):
+    def export_helper(self, filename):
+        self.get_filtered_image().save(filename)
+        self.set_status(f"Saved file: {filename}")
+
+    def export_image_clicked(self):
+        path, fullname = os.path.split(self.filename)
+        name, ext = os.path.splitext(fullname)
+        filename, filetype = QFileDialog.getSaveFileName(
+            self,
+            "Export Image As...",
+            os.path.join(self.last_save_location, f"{name}_pixelated{ext}"),
+            f"PNG (*.png);;"
+            f"JPEG (*.jpg);;"
+            f"BMP (*.bmp)"
+        )
+
+        if filename != "":
+            file_path, file_title = os.path.split(filename)
+            self.last_save_location = file_path
+            self.set_status(f"Exporting image...")
+            QTimer.singleShot(10, lambda: self.export_helper(filename))
+
+    def close_clicked(self):
         self.set_source(None)
 
     def about_clicked(self):
