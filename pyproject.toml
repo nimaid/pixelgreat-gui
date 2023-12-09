@@ -1,6 +1,6 @@
 [project]
-name = "pixelgreat_gui"
-version = "1.0.0"
+name = "pixelgreat-gui"
+version = "1.0.1"
 description = "A highly realistic RGB pixel filter (GUI Application)"
 license= {file = "LICENSE"}
 authors = [
@@ -26,3 +26,9 @@ Issues = "https://github.com/nimaid/pixelgreat-gui/issues"
 
 [project.scripts]
 pixelgreat-gui = "pixelgreat_gui:run"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["pixelgreat_gui"]
