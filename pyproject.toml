@@ -3,8 +3,8 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pixelgreat-gui"
-version = "1.0.13"
+name = "pixelgreat_gui"
+version = "1.1.0"
 readme = "README_pypi.md"
 description = "A GUI for Pixelgreat: A highly realistic RGB pixel filter"
 license= {file = "LICENSE"}
