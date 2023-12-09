@@ -1,3 +1,4 @@
+from PIL import Image
 from PyQt5.QtCore import Qt, QUrl, QTimer, QSize
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtWidgets import (
@@ -11,14 +12,15 @@ from PyQt5.QtWidgets import (
     QAbstractButton,
     QSlider,
     QStyle,
-    QProgressDialog
+    QProgressDialog,
+    QGraphicsView
 )
 from PyQt5.QtGui import (
     QImage, QPixmap, QIcon,
     QPainter
 )
 
-from . import constants, widgets
+from . import constants, helpers, widgets
 
 
 # ---- MAIN WINDOW ----
@@ -36,9 +38,10 @@ class MyQMainWindow(QMainWindow):
         # Declare elements
         self.padding_px = 10
 
-        # TODO: https://stackoverflow.com/questions/35508711/how-to-enable-pan-and-zoom-in-a-qgraphicsview
-        self.test_label = QLabel("Wow! TEEEEEEESSSST")
-        self.test_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Setup main viewer
+        self.viewer = widgets.PhotoViewer(self)
+        self.viewer.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.viewer.setFixedSize(QSize(400, 400))
 
         # Declare main layout
         self.main_layout = QGridLayout()
@@ -46,7 +49,7 @@ class MyQMainWindow(QMainWindow):
         self.main_layout.setSpacing(self.padding_px)
 
         # Populate main layout
-        self.main_layout.addWidget(self.test_label, 0, 0, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.main_layout.addWidget(self.viewer, 0, 0, alignment=Qt.AlignmentFlag.AlignCenter)
 
         # Set main layout as the central widget
         self.main_widget = QWidget()
@@ -78,22 +81,35 @@ class MyQMainWindow(QMainWindow):
 
         # Initialize other variables
         self.filename = None
+        self.source = None
+
+    def set_viewer_image(self, image=None):
+        if image is not None:
+            self.viewer.set_photo(helpers.image_to_pixmap(image))
+        else:
+            self.viewer.set_photo(None)
+
+    def set_source(self, filename=None):
+        self.filename = filename
+        if self.filename is not None:
+            self.source = Image.open(self.filename)
+            self.set_viewer_image(self.source)
+        else:
+            self.set_viewer_image(None)
 
     def open_file_clicked(self):
         filename, filetype = QFileDialog.getOpenFileName(
             self,
             "Open File",
             constants.PROG_PATH,
-            "All Binary Files (*)"
+            "Image Files (*.png *.jpg *.bmp)"
         )
 
         if filename != "":
-            print(f"Open {filename}")
-            self.filename = filename
+            self.set_source(filename)
 
     def close_file_clicked(self):
-        print(f"Close {self.filename}")
-        self.filename = None
+        self.set_source(None)
 
     def about_clicked(self):
         popup = About(parent=self)

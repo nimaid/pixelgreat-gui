@@ -1,5 +1,10 @@
 import math
-from PyQt5.QtWidgets import QSlider, QStyle
+from PyQt5.QtCore import Qt, QPoint, QRectF, pyqtSignal
+from PyQt5.QtWidgets import (
+    QSlider, QStyle,
+    QGraphicsView, QGraphicsScene, QGraphicsPixmapItem, QFrame
+)
+from PyQt5.QtGui import QBrush, QColor, QPixmap
 
 
 # Custom seekbar class
@@ -45,3 +50,80 @@ class SeekBar(QSlider):
     def mouseMoveEvent(self, event):
         value = QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
         self.set_position(value)
+
+
+# Custom interactive graphics view class
+#   A widget that allows user interaction like panning and zooming with the mouse
+class PhotoViewer(QGraphicsView):
+    photoClicked = pyqtSignal(QPoint)
+
+    def __init__(self, parent):
+        super(PhotoViewer, self).__init__(parent)
+
+        self._zoom = 0
+        self._empty = True
+
+        self._scene = QGraphicsScene(self)
+        self._photo = QGraphicsPixmapItem()
+
+        self._scene.addItem(self._photo)
+        self.setScene(self._scene)
+
+        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        self.setBackgroundBrush(QBrush(QColor(30, 30, 30)))
+        self.setFrameShape(QFrame.NoFrame)
+
+    def has_photo(self):
+        return not self._empty
+
+    def set_photo(self, pixmap=None):
+        self._zoom = 0
+        if pixmap and not pixmap.isNull():
+            self._empty = False
+            self.setDragMode(QGraphicsView.ScrollHandDrag)
+            self._photo.setPixmap(pixmap)
+        else:
+            self._empty = True
+            self.setDragMode(QGraphicsView.NoDrag)
+            self._photo.setPixmap(QPixmap())
+        self.fitInView()
+
+    def fitInView(self, scale=True, **kwargs):
+        rect = QRectF(self._photo.pixmap().rect())
+        if not rect.isNull():
+            self.setSceneRect(rect)
+            if self.has_photo():
+                unity = self.transform().mapRect(QRectF(0, 0, 1, 1))
+                self.scale(1 / unity.width(), 1 / unity.height())
+                view_rect = self.viewport().rect()
+                scene_rect = self.transform().mapRect(rect)
+                factor = min(view_rect.width() / scene_rect.width(),
+                             view_rect.height() / scene_rect.height())
+                self.scale(factor, factor)
+            self._zoom = 0
+
+    def wheelEvent(self, event):
+        if self.has_photo():
+            if event.angleDelta().y() > 0:
+                factor = 1.25
+                self._zoom += 1
+            else:
+                factor = 0.8
+                self._zoom -= 1
+            if self._zoom > 0:
+                self.scale(factor, factor)
+            elif self._zoom == 0:
+                self.fitInView()
+            else:
+                self._zoom = 0
+
+    def mousePressEvent(self, event):
+        # TODO: Remove if not used
+        if self._photo.isUnderMouse():
+            self.photoClicked.emit(self.mapToScene(event.pos()).toPoint())
+
+        super(PhotoViewer, self).mousePressEvent(event)
