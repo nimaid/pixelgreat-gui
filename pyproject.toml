@@ -17,6 +17,7 @@ classifiers = [
     "Topic :: Multimedia :: Graphics :: Graphics Conversion"
 ]
 dependencies = [
+    "pyyaml",
     "Pillow>10.0",
     "pixelgreat",
     "PyQt5"
@@ -28,7 +29,7 @@ repository = "https://github.com/nimaid/pixelgreat-gui"
 Issues = "https://github.com/nimaid/pixelgreat-gui/issues"
 
 [project.scripts]
-pixelgreat-gui = "pixelgreat_gui.core:run"
+pixelgreat-gui = "pixelgreat:run"
 
 [tool.setuptools]
 include-package-data = true
