@@ -7,6 +7,12 @@ from PyQt5.QtGui import QPalette, QColor
 from . import windows, constants
 
 
+# TODO: Add image sequence / video opening and scrubbing w/o live update
+# TODO: Add live update to video scrubbing
+# TODO: Add image sequence export
+# TODO: Add video export w/o quality options
+# TODO: Add quality options to export dialog
+
 # Main window class
 #   Handles variables related to the main window.
 #   Any actual program functionality or additional dialogs are handled elsewhere
