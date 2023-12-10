@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixelgreat-gui"
-version = "1.1.1"
+version = "1.1.2"
 readme = "README_pypi.md"
 description = "A GUI for Pixelgreat: A highly realistic RGB pixel filter"
 license= {file = "LICENSE"}
@@ -28,7 +28,7 @@ repository = "https://github.com/nimaid/pixelgreat-gui"
 Issues = "https://github.com/nimaid/pixelgreat-gui/issues"
 
 [project.scripts]
-pixelgreat-gui = "pixelgreat_gui.main:run"
+pixelgreat-gui = "pixelgreat_gui.core:run"
 
 [tool.setuptools]
 include-package-data = true
