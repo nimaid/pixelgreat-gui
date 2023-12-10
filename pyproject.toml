@@ -27,6 +27,9 @@ homepage = "https://github.com/nimaid/pixelgreat-gui"
 repository = "https://github.com/nimaid/pixelgreat-gui"
 Issues = "https://github.com/nimaid/pixelgreat-gui/issues"
 
+[project.scripts]
+pixelgreat-gui = "pixelgreat_gui.main:run"
+
 [tool.setuptools]
 include-package-data = true
 

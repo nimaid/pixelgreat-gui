@@ -1,2 +1,2 @@
-include *.py *.yml *.md
-graft resources
+include pixelgreat_gui/*.yml pixelgreat_gui/*.py
+graft pixelgreat_gui/resources
