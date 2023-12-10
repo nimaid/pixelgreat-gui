@@ -569,7 +569,7 @@ class MyQMainWindow(QMainWindow):
     def apply_button_clicked(self):
         self.viewer.fitInView()
         self.set_status("Applying settings...")
-        QTimer.singleShot(10, lambda: self.apply_button_helper(f"Loaded file: {self.filename} (converted)"))
+        QTimer.singleShot(10, lambda: self.apply_button_helper(f"Converted file: {self.filename}"))
 
     def reset_button_clicked(self):
         self.settings.set_to_defaults()
