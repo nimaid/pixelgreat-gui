@@ -4,5 +4,5 @@
 <p align="center"><img src="https://raw.githubusercontent.com/nimaid/pixelgreat-gui/main/docs/example.png?raw=true" width="800px" alt="Screenshot of the program"/></p>
 
 ## Command Line Usage
-After installing the module, run `python -m pixelgreat-gui`.
+After installing the module, run `pixelgreat-gui`.
 
