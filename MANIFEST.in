@@ -1,2 +1,2 @@
-include *.py *.yml *.MD
+include *.py *.yml *.md
 graft resources
