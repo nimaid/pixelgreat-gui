@@ -1,5 +1,3 @@
-import pixelgreat as pg
-
 from . import constants
 
 

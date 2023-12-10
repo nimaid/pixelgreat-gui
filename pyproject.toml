@@ -35,4 +35,4 @@ pixelgreat-gui = "pixelgreat_gui:run"
 include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["pixelgreat_gui"]
+where = ["src"]

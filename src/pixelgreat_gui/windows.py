@@ -1,25 +1,18 @@
 import os
 import pixelgreat as pg
 from PIL import Image
-from PyQt5.QtCore import Qt, QUrl, QTimer, QSize
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtCore import Qt, QTimer, QSize
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget,
     QGridLayout, QHBoxLayout, QVBoxLayout,
     QLabel, QPushButton,
     QFileDialog, QAction, QSizePolicy,
-    QDialog, QDialogButtonBox, QComboBox, QLineEdit, QCheckBox,
-    QSpinBox, QDoubleSpinBox,
-    QMessageBox, QTextEdit,
-    QAbstractButton,
-    QSlider,
-    QStyle,
-    QProgressDialog,
-    QGraphicsView
+    QDialog, QDialogButtonBox, QComboBox, QCheckBox,
+    QSpinBox, QDoubleSpinBox
 )
 from PyQt5.QtGui import (
-    QImage, QPixmap, QIcon,
-    QPainter, QColor, QPalette
+    QPixmap, QIcon,
+    QColor
 )
 
 from . import constants, helpers, widgets, settings
@@ -48,8 +41,8 @@ class MyQMainWindow(QMainWindow):
         self.filter = None
         self.filtered_image = None
         self.status = None
-        self.last_save_location = constants.PROG_PATH
-        self.last_open_location = constants.PROG_PATH
+        self.last_save_location = constants.USER_DIR
+        self.last_open_location = constants.USER_DIR
 
         # Make main settings object
         self.settings = settings.PixelgreatSettings()
