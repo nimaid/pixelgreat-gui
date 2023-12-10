@@ -29,7 +29,7 @@ repository = "https://github.com/nimaid/pixelgreat-gui"
 Issues = "https://github.com/nimaid/pixelgreat-gui/issues"
 
 [project.scripts]
-pixelgreat-gui = "pixelgreat:run"
+pixelgreat-gui = "pixelgreat_gui:run"
 
 [tool.setuptools]
 include-package-data = true
