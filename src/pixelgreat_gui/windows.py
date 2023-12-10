@@ -410,10 +410,13 @@ class MyQMainWindow(QMainWindow):
     # Called when the Screen Type is changed
     # Therefore, the Screen Type entry is NOT updated here
     def update_settings_entries(self):
+        # Set direction input
+        self.direction_entry.blockSignals(True)
         if self.settings.get_setting("direction") == pg.Direction.VERTICAL:
             self.direction_entry.setCurrentIndex(0)
         elif self.settings.get_setting("direction") == pg.Direction.HORIZONTAL:
             self.direction_entry.setCurrentIndex(1)
+        self.direction_entry.blockSignals(False)
 
         # Set the percentage inputs
         for element, name in [
@@ -432,19 +435,25 @@ class MyQMainWindow(QMainWindow):
             [self.grid_strength_entry, "grid_strength"],
             [self.output_scale_entry, "output_scale"],
         ]:
+            element.blockSignals(True)
             element.setValue(self.settings.get_setting(name) * 100)
+            element.blockSignals(False)
 
         # Set boolean values
         for element, name in [
             [self.pixelate_entry, "pixelate"],
         ]:
+            element.blockSignals(True)
             element.setChecked(self.settings.get_setting(name))
+            element.blockSignals(False)
 
         # Set integer values
         for element, name in [
             [self.pixel_size_entry, "pixel_size"],
         ]:
+            element.blockSignals(True)
             element.setValue(self.settings.get_setting(name))
+            element.blockSignals(False)
 
     def screen_type_entry_changed(self, idx):
         if idx == 0:
@@ -458,54 +467,54 @@ class MyQMainWindow(QMainWindow):
 
     def direction_entry_changed(self, idx):
         if idx == 0:
-            self.settings.set_setting("direction", pg.Direction.VERTICAL)
+            self.settings.user_set_setting("direction", pg.Direction.VERTICAL)
         elif idx == 1:
-            self.settings.set_setting("direction", pg.Direction.HORIZONTAL)
+            self.settings.user_set_setting("direction", pg.Direction.HORIZONTAL)
 
     def washout_entry_changed(self, value):
-        self.settings.set_setting("washout", value / 100)
+        self.settings.user_set_setting("washout", value / 100)
 
     def pixel_padding_entry_changed(self, value):
-        self.settings.set_setting("pixel_padding", value / 100)
+        self.settings.user_set_setting("pixel_padding", value / 100)
 
     def brighten_entry_changed(self, value):
-        self.settings.set_setting("brighten", value / 100)
+        self.settings.user_set_setting("brighten", value / 100)
 
     def blur_entry_changed(self, value):
-        self.settings.set_setting("blur", value / 100)
+        self.settings.user_set_setting("blur", value / 100)
 
     def bloom_size_entry_changed(self, value):
-        self.settings.set_setting("bloom_size", value / 100)
+        self.settings.user_set_setting("bloom_size", value / 100)
 
     def pixel_aspect_entry_changed(self, value):
-        self.settings.set_setting("pixel_aspect", value / 100)
+        self.settings.user_set_setting("pixel_aspect", value / 100)
 
     def rounding_entry_changed(self, value):
-        self.settings.set_setting("rounding", value / 100)
+        self.settings.user_set_setting("rounding", value / 100)
 
     def scanline_spacing_entry_changed(self, value):
-        self.settings.set_setting("scanline_spacing", value / 100)
+        self.settings.user_set_setting("scanline_spacing", value / 100)
 
     def scanline_size_entry_changed(self, value):
-        self.settings.set_setting("scanline_size", value / 100)
+        self.settings.user_set_setting("scanline_size", value / 100)
 
     def scanline_blur_entry_changed(self, value):
-        self.settings.set_setting("scanline_blur", value / 100)
+        self.settings.user_set_setting("scanline_blur", value / 100)
 
     def scanline_strength_entry_changed(self, value):
-        self.settings.set_setting("scanline_strength", value / 100)
+        self.settings.user_set_setting("scanline_strength", value / 100)
 
     def bloom_strength_entry_changed(self, value):
-        self.settings.set_setting("bloom_strength", value / 100)
+        self.settings.user_set_setting("bloom_strength", value / 100)
 
     def grid_strength_entry_changed(self, value):
-        self.settings.set_setting("grid_strength", value / 100)
+        self.settings.user_set_setting("grid_strength", value / 100)
 
     def pixel_size_entry_changed(self, value):
-        self.settings.set_setting("pixel_size", value)
+        self.settings.user_set_setting("pixel_size", value)
 
     def output_scale_entry_changed(self, value):
-        self.settings.set_setting("output_scale", value / 100)
+        self.settings.user_set_setting("output_scale", value / 100)
         self.output_size = (
             round(self.input_size[0] * self.settings.get_setting("output_scale")),
             round(self.input_size[1] * self.settings.get_setting("output_scale"))
@@ -513,9 +522,9 @@ class MyQMainWindow(QMainWindow):
 
     def pixelate_entry_changed(self, value):
         if value == 0:
-            self.settings.set_setting("pixelate", False)
+            self.settings.user_set_setting("pixelate", False)
         else:
-            self.settings.set_setting("pixelate", True)
+            self.settings.user_set_setting("pixelate", True)
 
     def update_filter(self):
         self.filter = pg.Pixelgreat(
@@ -567,12 +576,7 @@ class MyQMainWindow(QMainWindow):
     def reset_button_clicked(self):
         self.settings.set_to_defaults()
 
-        if self.settings.get_screen_type() == pg.ScreenType.LCD:
-            self.screen_type_entry.setCurrentIndex(0)
-        elif self.settings.get_screen_type() == pg.ScreenType.CRT_TV:
-            self.screen_type_entry.setCurrentIndex(1)
-        elif self.settings.get_screen_type() == pg.ScreenType.CRT_MONITOR:
-            self.screen_type_entry.setCurrentIndex(2)
+        self.screen_type_entry.setCurrentIndex(0)
 
         self.update_settings_entries()
 

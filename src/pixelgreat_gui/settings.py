@@ -1,8 +1,13 @@
+import pixelgreat as pg
+
 from . import constants
 
 
 class PixelgreatSettings:
     def __init__(self):
+        # Init variables
+        self.user_changed_settings = None
+
         # Set default screen type
         self.screen_type = constants.DEFAULTS["screen_type"]
 
@@ -36,3 +41,7 @@ class PixelgreatSettings:
 
     def set_setting(self, setting, value):
         self.settings_dict[self.screen_type.value][setting] = value
+
+    def user_set_setting(self, setting, value):
+        for screen_type in ["LCD", "CRT_TV", "CRT_MONITOR"]:
+            self.settings_dict[screen_type][setting] = value
